@@ -146,8 +146,8 @@ public class QLearning {
 				do_nothing_v = QLearning.Q[state_bin_v][state_bin_h][1];
 				player.action_to_perform = click_v > do_nothing_v ? 0 : 1;
 			}
-
-			if (player.action_to_perform == 0) {
+ 
+			if (player.action_to_perform == 0 && !player.isPlayer) {
 				player.onTap();
 			}
 		}

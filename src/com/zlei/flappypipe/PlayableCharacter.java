@@ -1,103 +1,97 @@
-/**
- * The SuperClass of every character that is controlled by the player
- * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
- */
-
 package com.zlei.flappypipe;
 
-public abstract class PlayableCharacter extends Sprite { 
-	public double [] m_state = {0, 0}; // [0]:vertical_distance [1]:horizontal_distance
-	public double [] m_state_dash = {0, 0};
+public abstract class PlayableCharacter extends Sprite {
+	public double[] m_state = { 0, 0 }; // [0]:vertical_distance
+										// [1]:horizontal_distance
+	public double[] m_state_dash = { 0, 0 };
 	public double explore = 0;
 	public int action_to_perform = 1;
-	public double resolution = 8;
+	public double resolution = 4;
 	public double alpha_QL = 0.7;
-	public double [] vertical_dist_range = {-350, 190};
-	public double [] horizontal_dist_range = {0, 180};  
+	public double[] vertical_dist_range = { -350, 190 };
+	public double[] horizontal_dist_range = { 0, 180 };
 	public int reward = 1;
 	public boolean isDead = false;
+	public boolean isPlayer = false;
 
 	public PlayableCharacter(GameView view, Game game) {
 		super(view, game);
 	}
-	
+
 	/**
-	 * Calls super.move
-	 * Moves the character to 1/6 of the horizontal screen
+	 * Calls super.move Moves the character to 1/6 of the horizontal screen
 	 * Manages the speed changes -> Falling
 	 */
+
+	protected double bumprate = 0.7;
+
 	@Override
-	public void move(){
+	public void move() {
 		if (isDead)
 			setSpeedX(-view.getSpeedX());
-		else
-			this.x = this.view.getWidth() / 6;
-		
-		if(speedY < 0){
-			// The character is moving up
-			speedY = speedY * 2 / 3 + getSpeedTimeDecrease() / 2;
-		}else{
-			// the character is moving down
+
+		if (speedY < 0) {
+			speedY = (float) (speedY * bumprate + getSpeedTimeDecrease() / 2);
+		} else {
 			this.speedY += getSpeedTimeDecrease();
 		}
-		
-		if(this.speedY > getMaxSpeed()){
-			// speed limit
-			this.speedY = getMaxSpeed();
-		}
-		
+
 		super.move();
 	}
 
 	/**
 	 * A dead character falls slowly to the ground.
 	 */
-	public void dead(){ 
+	public void dead() {
 	}
-	
+
 	/**
 	 * Let the character flap up.
 	 */
-	public void onTap(){
+	public void onTap() {
 		this.speedY = getTabSpeed();
 		this.y += getPosTabIncrease();
 	}
-	
+
 	/**
 	 * Falling speed limit
+	 * 
 	 * @return
 	 */
-	protected float getMaxSpeed(){
+	protected float getMaxSpeed() {
 		// 25 @ 720x1280 px
 		return view.getHeight() / 51.2f;
 	}
-	
+
+	protected int gravity = 240;
+
 	/**
 	 * Every run cycle the speed towards the ground will increase.
+	 * 
 	 * @return
 	 */
-	protected float getSpeedTimeDecrease(){
+	protected float getSpeedTimeDecrease() {
 		// 4 @ 720x1280 px
-		return view.getHeight() / 320;
+		return view.getHeight() / gravity;
 	}
-	
+
 	/**
 	 * The character gets this speed when taped.
+	 * 
 	 * @return
 	 */
-	protected float getTabSpeed(){
+	protected float getTabSpeed() {
 		// -80 @ 720x1280 px
-		return - view.getHeight() / 16f;
+		return -view.getHeight() / 16f;
 	}
-	
+
 	/**
 	 * The character jumps up the pixel height of this value.
+	 * 
 	 * @return
 	 */
-	protected int getPosTabIncrease(){
+	protected int getPosTabIncrease() {
 		// -12 @ 720x1280 px
-		return - view.getHeight() / 100;
+		return -view.getHeight() / 100;
 	}
 }

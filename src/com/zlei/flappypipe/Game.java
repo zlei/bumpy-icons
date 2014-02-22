@@ -1,13 +1,8 @@
 /**
  * The Game
- * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
  */
 
 package com.zlei.flappypipe;
-
-import com.zlei.flappypipe.R;
 
 import android.app.Activity;
 import android.media.AudioManager;
@@ -24,12 +19,25 @@ public class Game extends Activity {
 	public static MediaPlayer musicPlayer = null;
 	public boolean musicShouldPlay = false;
 	private MyHandler handler;
+	public int mode;
+	private static int points;
 	GameView view;
 	GameOverDialog gameOverDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle bundle = getIntent().getExtras();
+		// decide game type
+		if (bundle.getString("mode").equals("flyer"))
+			mode = 0;
+		else if (bundle.getString("mode").equals("pipe"))
+			mode = 1;
+		else if (bundle.getString("mode").equals("learn"))
+			mode = 2;
+		else if (bundle.getString("mode").equals("compete"))
+			mode = 3;
+
 		view = new GameView(this, true);
 		gameOverDialog = new GameOverDialog(this);
 		handler = new MyHandler(this);
@@ -65,6 +73,11 @@ public class Game extends Activity {
 		super.onPause();
 	}
 
+	@Override
+	protected void onRestart() {
+		super.onRestart();
+	}
+
 	/**
 	 * Resumes the view (but waits the view waits for a tap) and starts the
 	 * music if it should be running. Also checks whether the Google Play
@@ -76,11 +89,17 @@ public class Game extends Activity {
 		super.onResume();
 	}
 
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
 	/**
 	 * Sends the handler the command to show the GameOverDialog. Because it
 	 * needs an UI thread.
 	 */
 	public void gameOver() {
+		// points = view.getPoints();
 		handler.sendMessage(Message.obtain(handler, 0));
 	}
 

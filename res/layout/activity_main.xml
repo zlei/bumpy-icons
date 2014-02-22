@@ -9,13 +9,46 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
+    <ImageButton
+        android:id="@+id/flyer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/play_button"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="181dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/play_button"
+        android:src="@drawable/play_flyer" />
+
+    <ImageButton
+        android:id="@+id/compete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/flyer_button"
+        android:layout_alignTop="@+id/flyer_button"
+        android:layout_marginTop="62dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/compete_button"
+        android:src="@drawable/compete_button" />
+
+    <ImageButton
+        android:id="@+id/learn_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/compete_button"
+        android:layout_below="@+id/compete_button"
+        android:layout_marginTop="28dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/learn_button"
+        android:src="@drawable/learn_button" />
+
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/learn_button"
+        android:layout_above="@+id/play_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="53dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/splash" />
 
@@ -23,22 +56,11 @@
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/learn_button"
-        android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@+id/learn_button"
+        android:layout_above="@+id/flyer_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="33dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/play_button"
         android:src="@drawable/play_pipe" />
-
-    <ImageButton
-        android:id="@+id/learn_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/image_logo"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/play_button"
-        android:src="@drawable/play_flyer" />
 
 </RelativeLayout>

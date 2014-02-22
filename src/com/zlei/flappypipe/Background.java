@@ -1,8 +1,6 @@
 /**
  * Manages the Bitmap for the background
  * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
  */
 
 package com.zlei.flappypipe;

@@ -20,35 +20,40 @@ public final class R {
         public static final int bg_new=0x7f020000;
         public static final int brownbutton=0x7f020001;
         public static final int chrome=0x7f020002;
-        public static final int fg_new=0x7f020003;
-        public static final int firefox=0x7f020004;
-        public static final int greybutton=0x7f020005;
-        public static final int icon=0x7f020006;
-        public static final int pipe_down=0x7f020007;
-        public static final int pipe_up=0x7f020008;
-        public static final int play_flyer=0x7f020009;
-        public static final int play_pipe=0x7f02000a;
-        public static final int safari=0x7f02000b;
-        public static final int splash=0x7f02000c;
-        public static final int splash_old=0x7f02000d;
+        public static final int compete_button=0x7f020003;
+        public static final int fg_new=0x7f020004;
+        public static final int firefox=0x7f020005;
+        public static final int greybutton=0x7f020006;
+        public static final int icon=0x7f020007;
+        public static final int ieie=0x7f020008;
+        public static final int learn_button=0x7f020009;
+        public static final int pipe_down=0x7f02000a;
+        public static final int pipe_up=0x7f02000b;
+        public static final int play_flyer=0x7f02000c;
+        public static final int play_pipe=0x7f02000d;
+        public static final int safari=0x7f02000e;
+        public static final int splash=0x7f02000f;
+        public static final int splash_old=0x7f020010;
     }
     public static final class id {
-        public static final int b_ok=0x7f070008;
-        public static final int image_logo=0x7f070000;
-        public static final int learn_button=0x7f070001;
-        public static final int medaille=0x7f070007;
-        public static final int play_button=0x7f070002;
-        public static final int tv_best_score=0x7f070006;
-        public static final int tv_best_score_value=0x7f070005;
-        public static final int tv_current_score=0x7f070004;
-        public static final int tv_current_score_value=0x7f070003;
+        public static final int b_continue=0x7f070009;
+        public static final int b_finish=0x7f07000a;
+        public static final int compete_button=0x7f070002;
+        public static final int flyer_button=0x7f070000;
+        public static final int image_logo=0x7f070004;
+        public static final int learn_button=0x7f070003;
+        public static final int play_button=0x7f070001;
+        public static final int tv_best_score=0x7f070007;
+        public static final int tv_best_score_value=0x7f070008;
+        public static final int tv_current_score=0x7f070005;
+        public static final int tv_current_score_value=0x7f070006;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int gameover=0x7f030001;
     }
     public static final class string {
-        public static final int about_back_button=0x7f050010;
+        public static final int about_back_button=0x7f050012;
         public static final int achievement_bronze=0x7f050006;
         public static final int achievement_gold=0x7f050008;
         public static final int achievement_silver=0x7f050007;
@@ -57,7 +62,10 @@ public final class R {
         public static final int ad_unit_id=0x7f050001;
         public static final int app_id=0x7f050000;
         public static final int app_name=0x7f050009;
+        public static final int back=0x7f05000d;
         public static final int best_score=0x7f05000b;
+        public static final int compete_button=0x7f050016;
+        public static final int continue_game=0x7f05000e;
         public static final int current_score=0x7f05000a;
         public static final int defaultscore=0x7f05000c;
         /**  Google Admob 
@@ -66,12 +74,12 @@ public final class R {
         /**  Samsung Adhub 
          */
         public static final int leaderboard_highscore=0x7f050003;
-        public static final int logo=0x7f050013;
-        public static final int medaille=0x7f05000d;
-        public static final int onscreen_coin_text=0x7f050012;
-        public static final int onscreen_score_text=0x7f050011;
-        public static final int play_button=0x7f05000e;
-        public static final int save_button=0x7f05000f;
+        public static final int learn_button=0x7f050015;
+        public static final int logo=0x7f050014;
+        public static final int medaille=0x7f05000f;
+        public static final int onscreen_score_text=0x7f050013;
+        public static final int play_button=0x7f050010;
+        public static final int save_button=0x7f050011;
     }
     public static final class style {
         /** 

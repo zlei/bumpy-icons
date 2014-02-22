@@ -1,9 +1,5 @@
 /**
  * GameView
- * Probably the most important class for the game
- * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
  */
 
 package com.zlei.flappypipe;
@@ -24,13 +20,14 @@ import android.view.View.OnTouchListener;
 import com.zlei.flappypipe.R;
 
 public class GameView extends SurfaceView implements Runnable, OnTouchListener {
-	public static final long UPDATE_INTERVAL = 1;
-	public int numOfPigs = 10, numOfLearners = 500;
+	public static final long UPDATE_INTERVAL = 5;
+	public int numOfPigs = 1, numOfLearners = 100;
 	private Thread thread;
 	private SurfaceHolder holder;
 	private int obstacleY = -1;
 	private boolean deleteAll = false;
 	volatile private boolean shouldRun = false;
+	public boolean allowLearning = false;
 	private int points = 0;
 
 	private Game game;
@@ -39,20 +36,59 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private List<PlayableCharacter> players = new ArrayList<PlayableCharacter>();
 	private List<Obstacle> obstacles = new ArrayList<Obstacle>();
 	private List<PowerUp> powerUps = new ArrayList<PowerUp>();
+	private SoundMeter sound = new SoundMeter();
+
+	public PlayableCharacter createIcon(int r2) {
+		int r = 0;
+		if (r2 == -1)
+			r = (int) Math.ceil(Math.random() * 4);
+		else
+			r = r2;
+
+		if (r == 1) {
+			return new FireFox(this, game);
+		} else if (r == 2) {
+			return new Exlpore(this, game);
+		} else if (r == 3) {
+			return new Safari(this, game);
+		} else if (r == 4 || r == 0) {
+			return new Chrome(this, game);
+		}
+
+		return null;
+	}
 
 	public GameView(Context context, boolean playable) {
 		super(context);
 		this.game = (Game) context;
 
+		if (game.mode == 0)
+			numOfPigs = 1;
+		else if (game.mode == 1)
+			numOfPigs = 1;
+		else if (game.mode == 2) {
+			allowLearning = true;
+			numOfPigs = 50;
+		} else if (game.mode == 3)
+			numOfPigs = 4;
+
 		holder = getHolder();
 
-		for (int i = 0; i < numOfLearners; i++)
-			players.add(new Chrome(this, game));
+		if (game.mode == 3) {
+			players.add(createIcon(4));
+			players.add(createIcon(1));
+			players.add(createIcon(2));
+			players.add(createIcon(3));
+			players.get(0).isPlayer = true;
+		} else
+			for (int i = 0; i < numOfPigs; i++)
+				players.add(createIcon(-1));
 
 		bg = new Background(this, game);
 		fg = new Frontground(this, game);
 
 		setOnTouchListener(this);
+		sound.start();
 	}
 
 	@Override
@@ -61,10 +97,15 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 			if (shouldRun == false) {
 				shouldRun = true;
 				points = 0;
-				deleteAll = true;
+
+				if (allowLearning)
+					deleteAll = true;
 			}
-			obstacleY = (int) event.getY();
-			// this.player.onTap();
+
+			if (game.mode == 1 || game.mode == 2)
+				obstacleY = (int) event.getY();
+			else
+				this.players.get(0).onTap();
 		}
 
 		return true;
@@ -77,31 +118,55 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		draw();
 
 		while (true) {
+			// System.out.println(sound.getAmplitude());
+			if (sound.getAmplitude() > 500) {
+				if (game.mode == 1 || game.mode == 2)
+					;
+				else
+					this.players.get(0).onTap();
+			}
+
 			if (deleteAll) {
 				obstacles.removeAll(obstacles);
 				players.removeAll(players);
 
-				for (int i = 0; i < numOfPigs; i++) {
-					players.add(new Chrome(this, game));
-				}
+				if (game.mode == 3) {
+					players.add(createIcon(4));
+					players.add(createIcon(1));
+					players.add(createIcon(2));
+					players.add(createIcon(3));
+					players.get(0).isPlayer = true;
+				} else
+					for (int i = 0; i < numOfPigs; i++)
+						players.add(createIcon(-1));
+				if (game.mode == 0)
+					players.get(0).isPlayer = true;
 
 				deleteAll = false;
 			}
 
-			checkPasses();
-			checkOutOfRange();
-			checkCollision();
-			createObstacle();
-			QLearning.learnAndPerform(players, obstacles);
-			move();
-
 			if (shouldRun) {
+				checkPasses();
+				checkOutOfRange();
+				checkCollision();
+				createObstacle();
+				QLearning.learnAndPerform(players, obstacles);
+				move();
 				draw();
 
 				try {
 					Thread.sleep(UPDATE_INTERVAL);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}
+			} else {
+				if (allowLearning) {
+					checkPasses();
+					checkOutOfRange();
+					checkCollision();
+					createObstacle();
+					QLearning.learnAndPerform(players, obstacles);
+					move();
 				}
 			}
 		}
@@ -240,6 +305,8 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 
 			if (!player.isTouchingGround())
 				allDead = false;
+			else
+				player.setX(-100);
 
 			if (!player.isDead) {
 				if (player.isTouchingEdge()) {
@@ -250,15 +317,35 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		}
 
 		if (allDead) {
+			gameOver();
 			if (true) {
 				obstacles.removeAll(obstacles);
 				players.removeAll(players);
 
-				for (int i = 0; i < numOfLearners; i++) {
-					players.add(new Chrome(this, game));
+				if (allowLearning)
+					for (int i = 0; i < numOfLearners; i++) {
+						players.add(createIcon(-1));
+					}
+				else {
+					if (game.mode == 3) {
+						players.add(createIcon(4));
+						players.add(createIcon(1));
+						players.add(createIcon(2));
+						players.add(createIcon(3));
+						players.get(0).isPlayer = true;
+					} else
+						for (int i = 0; i < numOfPigs; i++) {
+							players.add(createIcon(-1));
+						}
 				}
-
 				shouldRun = false;
+				draw();
+
+				try {
+					Thread.sleep(UPDATE_INTERVAL);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -275,7 +362,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		else if (obstacles.size() == 1) {
 			Obstacle obs = obstacles.get(0);
 
-			if (obs.pipe_up.getX() < 5 * getWidth() / 11) {
+			if (obs.pipe_up.getX() < 5 * getWidth() / 13) {
 				obstacles.add(new Obstacle(this, game, obstacleY));
 				obstacleY = -1;
 			}
@@ -308,7 +395,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 */
 	public int getSpeedX() {
 		// 16 @ 720x1280 px
-		int speedDefault = this.getWidth() / 45;
+		int speedDefault = this.getWidth() / 90;
 		// 1,2 every 4 points @ 720x1280 px
 		// int speedIncrease = (int) (this.getWidth() / 600f *
 		// (game.accomplishmentBox.points / 4));
@@ -328,6 +415,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 */
 	public void gameOver() {
 		this.shouldRun = false;
+
 		game.gameOver();
 	}
 
@@ -335,7 +423,6 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 * A value for the position and size of the onScreen score Text
 	 */
 	public int getScoreTextMetrics() {
-		// 64 @ 720x1280 px
 		return this.getHeight() / 20;
 	}
 
@@ -345,5 +432,9 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 
 	public Game getGame() {
 		return this.game;
+	}
+
+	public int getPoints() {
+		return this.points;
 	}
 }

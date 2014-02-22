@@ -1,11 +1,3 @@
-/**
- * A spider with web
- * 
- * BTW Spiders have 8 eyes.
- * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
- */
 package com.zlei.flappypipe;
 
 import com.zlei.flappypipe.R;

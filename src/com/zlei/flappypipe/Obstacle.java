@@ -1,7 +1,3 @@
-/**
- * An obstacle: pipe_down + pipe_up
-*/
-
 package com.zlei.flappypipe;
 
 import android.graphics.Canvas;
@@ -40,6 +36,8 @@ public class Obstacle extends Sprite{
 			y1 = height / 12 + y - pipe_down.height;
 			y2 = height / 12 + y + gab;
 		} else {
+			touchY = Math.max(Math.min(touchY, height * 5 / 6), height / 6);
+			
 			y1 = touchY - pipe_down.height - height / 6;
 			y2 = touchY + gab - height / 6;
 		}

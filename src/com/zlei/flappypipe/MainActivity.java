@@ -1,10 +1,3 @@
-/**
- * Main Activity / Splashscreen with buttons.
- * 
- * @author Lars Harmsen
- * Copyright (c) <2014> <Lars Harmsen - Quchen>
- */
-
 package com.zlei.flappypipe;
 
 import java.io.File;
@@ -21,20 +14,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 public class MainActivity extends Activity {
-
-	/** Name of the SharedPreference that saves the medals */
-	public static final String medaille_save = "medaille_save";
-
-	/** Key that saves the medal */
-	public static final String medaille_key = "medaille_key";
-
 	public static final float DEFAULT_VOLUME = 0.3f;
-
-	/** Volume for sound and music */
 	public static float volume = DEFAULT_VOLUME;
-
 	private String PATH;
-	// read from file
 	public static String[] s;
 
 	@Override
@@ -43,24 +25,52 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		PATH = Environment.getExternalStorageDirectory().getPath() + "/flappy";
 		this.loadLearnFile();
+
 		ImageView image_logo = (ImageView) findViewById(R.id.image_logo);
-		((ImageButton) findViewById(R.id.play_button))
-				.setImageBitmap(Sprite
-						.createBitmap(
-								getResources().getDrawable(
-										R.drawable.play_flyer), this));
+
+		((ImageButton) findViewById(R.id.play_button)).setImageBitmap(Sprite
+				.createBitmap(getResources().getDrawable(R.drawable.play_pipe),
+						this));
 		((ImageButton) findViewById(R.id.play_button))
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						Intent i = new Intent(MainActivity.this, Game.class);
-						i.putExtra("mode", "play");
+						i.putExtra("mode", "pipe");
 						startActivity(i);
 					}
 				});
 
+		((ImageButton) findViewById(R.id.flyer_button))
+				.setImageBitmap(Sprite
+						.createBitmap(
+								getResources().getDrawable(
+										R.drawable.play_flyer), this));
+		((ImageButton) findViewById(R.id.flyer_button))
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(MainActivity.this, Game.class);
+						i.putExtra("mode", "flyer");
+						startActivity(i);
+					}
+				});
+		((ImageButton) findViewById(R.id.compete_button)).setImageBitmap(Sprite
+				.createBitmap(
+						getResources().getDrawable(R.drawable.compete_button),
+						this));
+		((ImageButton) findViewById(R.id.compete_button))
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(MainActivity.this, Game.class);
+						i.putExtra("mode", "compete");
+						startActivity(i);
+					}
+				});
 		((ImageButton) findViewById(R.id.learn_button)).setImageBitmap(Sprite
-				.createBitmap(getResources().getDrawable(R.drawable.play_pipe),
+				.createBitmap(
+						getResources().getDrawable(R.drawable.learn_button),
 						this));
 		((ImageButton) findViewById(R.id.learn_button))
 				.setOnClickListener(new View.OnClickListener() {
@@ -71,18 +81,17 @@ public class MainActivity extends Activity {
 						startActivity(i);
 					}
 				});
+
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
 	}
 
 	@Override
 	protected void onRestart() {
 		super.onRestart();
-		Intent i = new Intent(MainActivity.this, Game.class);
-		startActivity(i);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
 	}
 
 	private boolean loadLearnFile() {
@@ -135,4 +144,10 @@ public class MainActivity extends Activity {
 		}
 		return true;
 	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
+
 }
