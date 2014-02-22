@@ -8,7 +8,7 @@ public class FireFox extends PlayableCharacter {
 	public FireFox(GameView view, Game game) {
 		super(view, game);  
 	 
-		gravity = 240; 
+		gravity = 200; 
 
 		if (globalBitmap == null) {
 			globalBitmap = createBitmap(game.getResources().getDrawable(

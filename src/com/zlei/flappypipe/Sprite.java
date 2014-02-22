@@ -195,7 +195,9 @@ public abstract class Sprite {
 	 * @return
 	 */
 	public boolean isPassed() {
-		return this.x + this.width < view.getPlayer().getX();
+		if (view.getPlayer() != null)
+			return this.x + this.width < view.getPlayer().getX();
+		return false;
 	}
 
 	/**

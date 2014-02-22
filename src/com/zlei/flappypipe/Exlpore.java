@@ -7,9 +7,9 @@ public class Exlpore extends PlayableCharacter {
 
 	public Exlpore(GameView view, Game game) {
 		super(view, game);   
-
+ 
+		bumprate = 0.5; 
 		gravity = 400;
-		bumprate = 1 / 5; 
 
 		if (globalBitmap == null) {
 			globalBitmap = createBitmap(game.getResources().getDrawable(

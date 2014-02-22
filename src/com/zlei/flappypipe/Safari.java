@@ -8,7 +8,7 @@ public class Safari extends PlayableCharacter {
 	public Safari(GameView view, Game game) {
 		super(view, game);  
 	
-		bumprate = 0.9;
+		bumprate = 0.77;
 
 		if (globalBitmap == null) {
 			globalBitmap = createBitmap(game.getResources().getDrawable(

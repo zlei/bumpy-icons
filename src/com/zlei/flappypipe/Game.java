@@ -16,8 +16,6 @@ import android.widget.LinearLayout;
 public class Game extends Activity {
 	public static SoundPool soundPool = new SoundPool(5,
 			AudioManager.STREAM_MUSIC, 0);
-	public static MediaPlayer musicPlayer = null;
-	public boolean musicShouldPlay = false;
 	private MyHandler handler;
 	public int mode; 
 	GameView view;
@@ -28,6 +26,7 @@ public class Game extends Activity {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getIntent().getExtras();
 		// decide game type
+
 		if (bundle.getString("mode").equals("flyer"))
 			mode = 0;
 		else if (bundle.getString("mode").equals("pipe"))
@@ -36,23 +35,17 @@ public class Game extends Activity {
 			mode = 2;
 		else if (bundle.getString("mode").equals("compete"))
 			mode = 3;
-
+		else if (bundle.getString("mode").equals("sound")) {
+			mode = 0; 
+		}
 		view = new GameView(this, true);
+		if (bundle.getString("mode").equals("sound")) 
+			view.allowSound = true;
+		
 		gameOverDialog = new GameOverDialog(this);
 		handler = new MyHandler(this);
-		setLayouts();
+		setLayouts(); 
 	}
-
-	public void initMusicPlayer() {
-		if (musicPlayer == null) {
-			// to avoid unnecessary reinitialisation
-			// musicPlayer = MediaPlayer.create(this, R.raw.nyan_cat_theme);
-			// musicPlayer.setLooping(true);
-			// musicPlayer.setVolume(MainActivity.volume, MainActivity.volume);
-		}
-		// musicPlayer.seekTo(0); // Reset song to position 0
-	}
-
 	/**
 	 * Creates the layout containing a layout for ads and the GameView
 	 */
@@ -65,11 +58,7 @@ public class Game extends Activity {
 
 	@Override
 	protected void onPause() {
-		view.pause();
-		/*
-		if (musicPlayer.isPlaying()) {
-			musicPlayer.pause();
-		}*/
+		view.pause();  
 		super.onPause();
 	}
 

@@ -7,16 +7,20 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.ImageButton; 
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
 	public static final float DEFAULT_VOLUME = 0.3f;
 	public static float volume = DEFAULT_VOLUME;
 	private String PATH;
 	public static String[] s;
+	public boolean musicShouldPlay = true;
+	public static MediaPlayer musicPlayer = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +28,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		PATH = Environment.getExternalStorageDirectory().getPath() + "/flappy";
 		this.loadLearnFile();
-
+		 
 		((ImageButton) findViewById(R.id.play_button)).setImageBitmap(Sprite
 				.createBitmap(getResources().getDrawable(R.drawable.play_pipe),
 						this));
@@ -78,9 +82,38 @@ public class MainActivity extends Activity {
 						startActivity(i);
 					}
 				});
+		
+		((ImageButton) findViewById(R.id.voice_button)).setImageBitmap(Sprite
+				.createBitmap(
+						getResources().getDrawable(R.drawable.voice),
+						this));
+		((ImageButton) findViewById(R.id.voice_button))
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Intent i = new Intent(MainActivity.this, Game.class);
+						i.putExtra("mode", "sound");
+						startActivity(i);
+					}
+				});
+		initMusicPlayer();
 
 	}
 
+
+
+	public void initMusicPlayer() {
+		if (musicPlayer == null) {
+			musicPlayer = MediaPlayer.create(this, R.raw.iml);
+			musicPlayer.setLooping(true);
+			//musicPlayer.setVolume(MainActivity.volume, MainActivity.volume);
+		}
+		
+		musicPlayer.seekTo(0); // Reset song to position 0
+		if (musicShouldPlay){
+			musicPlayer.start();
+		}
+	}
 	@Override
 	protected void onResume() {
 		super.onResume();

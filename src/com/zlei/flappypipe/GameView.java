@@ -20,7 +20,7 @@ import android.view.View.OnTouchListener;
 import com.zlei.flappypipe.R;
 
 public class GameView extends SurfaceView implements Runnable, OnTouchListener {
-	public static final long UPDATE_INTERVAL = 5;
+	public static long UPDATE_INTERVAL = 10;
 	public int numOfPigs = 1, numOfLearners = 100;
 	private Thread thread;
 	private SurfaceHolder holder;
@@ -30,6 +30,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	public boolean allowLearning = false;
 	private int points = 0;
 	boolean gameOver = false;
+	private int bestScore = 0;
 
 	private Game game;
 	private Background bg;
@@ -37,6 +38,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private List<PlayableCharacter> players = new ArrayList<PlayableCharacter>();
 	private List<Obstacle> obstacles = new ArrayList<Obstacle>(); 
 	private SoundMeter sound = new SoundMeter();
+	boolean allowSound = false;
 
 	public PlayableCharacter createIcon(int r2) {
 		int r = 0;
@@ -88,7 +90,8 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		fg = new Frontground(this, game);
 
 		setOnTouchListener(this);
-		sound.start();
+		if (allowSound)
+			sound.start();
 	}
 
 	@Override
@@ -96,12 +99,12 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
 			if (shouldRun == false) {
 				shouldRun = true;
-				points = 0;
-
-				if (allowLearning) {
-					deleteAll = true;
-					allowLearning = false;
-				}
+				deleteAll = true;
+			} 
+			
+			if (allowLearning) {
+				gameOver = true;
+				game.finish();
 			}
 
 			if (game.mode == 1 || game.mode == 2)
@@ -116,31 +119,26 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	/**
 	 * The thread runs this method
 	 */
+	int looptime = 0;
 	public void run() {
 		draw();
 
-		while (!gameOver) {
-			// System.out.println(sound.getAmplitude());
-			if (sound.getAmplitude() > 500) {
+		while (!gameOver) { 
+			if (allowSound && sound.getAmplitude() > 1000 && looptime++ < 1000) {
+				looptime = 0;
+				
+				if (shouldRun == false) {
+					shouldRun = true;
+				} 
+				
 				if (game.mode == 1 || game.mode == 2)
 					;
 				else
-					;//this.players.get(0).onTap();
+					if (players.size() > 0)
+						this.players.get(0).onTap();
 			}
 
-			if (deleteAll) {
-				obstacles.removeAll(obstacles);
-				players.removeAll(players);
-
-				if (game.mode == 3) {
-					players.add(createIcon(4));
-					players.add(createIcon(1));
-					players.add(createIcon(2));
-					players.add(createIcon(3));
-					players.get(0).isPlayer = true;
-				} else
-					for (int i = 0; i < numOfPigs; i++)
-						players.add(createIcon(-1));
+			if (deleteAll) { 
 				if (game.mode == 0)
 					players.get(0).isPlayer = true;
 
@@ -169,7 +167,17 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 					createObstacle();
 					QLearning.learnAndPerform(players, obstacles);
 					move();
-				}
+
+					if (points > 20) {
+						draw();
+
+						try {
+							Thread.sleep(1);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				} 
 			}
 		}
 	}
@@ -178,8 +186,9 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 * Joins the thread
 	 */
 	public void pause() {
-		sound.stop();
-		
+		if (allowSound)
+			sound.stop();
+
 		while (thread != null) {
 			try {
 				thread.join();
@@ -198,7 +207,8 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 */
 	public void resume() {
 		pause(); // make sure the old thread isn't running
-		sound.start();
+		if (allowSound)
+			sound.start();
 		thread = new Thread(this);
 		thread.start();
 	}
@@ -208,7 +218,8 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 */
 	public void resumeAndKeepRunning() {
 		pause(); // make sure the old thread isn't running
-		sound.start();
+		if (allowSound)
+			sound.start();
 		thread = new Thread(this);
 		thread.start();
 	}
@@ -246,7 +257,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		paint.setTextSize(getScoreTextMetrics());
 		canvas.drawText(
 				game.getResources().getString(R.string.onscreen_score_text)
-						+ points, getScoreTextMetrics(), getScoreTextMetrics(),
+				+ points, getScoreTextMetrics(), getScoreTextMetrics(),
 				paint);
 	}
 
@@ -266,6 +277,9 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				if (!o.isAlreadyPassed) {
 					o.onPass();
 					points++;
+
+					if (points > bestScore)
+						bestScore = points;
 				}
 			}
 		}
@@ -318,10 +332,13 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		}
 
 		if (allDead) {
+			points = 0; 
 			obstacles.removeAll(obstacles);
 			players.removeAll(players);
-			setOnTouchListener(null);
 			
+			if (!allowLearning)
+				setOnTouchListener(null);
+
 			if (allowLearning) {
 				for (int i = 0; i < numOfLearners; i++) {
 					players.add(createIcon(-1));
@@ -339,7 +356,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				gameOver(); 
 		}
 	}
-	
+
 	public void restart() {  
 		if (game.mode == 3) {
 			players.add(createIcon(4));
@@ -353,8 +370,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 			} 
 
 		shouldRun = false;
-		draw();
-
+		draw(); 
 		setOnTouchListener(this);
 
 		try {
@@ -440,7 +456,9 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	}
 
 	public PlayableCharacter getPlayer() {
-		return this.players.get(0);
+		if (players.size() > 0)
+			return this.players.get(0);
+		return null;
 	}
 
 	public Game getGame() {

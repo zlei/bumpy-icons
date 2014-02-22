@@ -10,17 +10,6 @@
     tools:context=".MainActivity" >
 
     <ImageButton
-        android:id="@+id/flyer_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/play_button"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="181dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/play_button"
-        android:src="@drawable/play_flyer" />
-
-    <ImageButton
         android:id="@+id/compete_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,21 +35,53 @@
         android:id="@+id/image_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/play_button"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="53dp"
+        android:layout_marginTop="64dp"
         android:contentDescription="@string/logo"
         android:src="@drawable/splash" />
+
+    <ImageView
+        android:id="@+id/image_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="19dp"
+        android:contentDescription="@string/logo"
+        android:src="@drawable/search" />
 
     <ImageButton
         android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/flyer_button"
+        android:layout_below="@+id/image_search"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="33dp"
+        android:layout_marginTop="25dp"
         android:background="@android:color/transparent"
         android:contentDescription="@string/play_button"
         android:src="@drawable/play_pipe" />
+
+    <ImageButton
+        android:id="@+id/flyer_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/play_button"
+        android:layout_below="@+id/play_button"
+        android:layout_marginTop="33dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/play_button"
+        android:src="@drawable/play_flyer" />
+
+    <ImageButton
+        android:id="@+id/voice_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/learn_button"
+        android:layout_below="@+id/learn_button"
+        android:layout_marginTop="30dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/learn_button"
+        android:src="@drawable/voice" />
 
 </RelativeLayout>
