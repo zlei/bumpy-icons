@@ -46,8 +46,9 @@ public class GameOverDialog extends Dialog {
 			@Override
 			public void onClick(View v) {
 				dismiss();
-				Intent i = new Intent(game, MainActivity.class);
-				game.startActivity(i);
+				//Intent i = new Intent(game, MainActivity.class);
+				//game.startActivity(i);
+				game.view.gameOver = true;
 				game.finish();
 			}
 		});

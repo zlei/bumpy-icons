@@ -19,8 +19,7 @@ public class Game extends Activity {
 	public static MediaPlayer musicPlayer = null;
 	public boolean musicShouldPlay = false;
 	private MyHandler handler;
-	public int mode;
-	private static int points;
+	public int mode; 
 	GameView view;
 	GameOverDialog gameOverDialog;
 
@@ -67,14 +66,16 @@ public class Game extends Activity {
 	@Override
 	protected void onPause() {
 		view.pause();
+		/*
 		if (musicPlayer.isPlaying()) {
 			musicPlayer.pause();
-		}
+		}*/
 		super.onPause();
 	}
 
 	@Override
 	protected void onRestart() {
+		view.restart();
 		super.onRestart();
 	}
 

@@ -19,6 +19,15 @@ public class QLearning {
 				}
 			}
 		}
+
+		Q2 = new double[width][width][10]; 
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < width; j++) {
+				for (int k = 0; k < 2; k++) {
+					Q[i][j][k] = 0.0;
+				}
+			}
+		}
 	}
 
 	public static void setQ(String[] s) {
@@ -45,7 +54,7 @@ public class QLearning {
 	/* Other methods protected by singleton-ness */
 	protected static void demoMethod() {
 	}
-
+ 
 	public static void learnAndPerform(List<PlayableCharacter> players,
 			List<Obstacle> obstacles) {
 		for (PlayableCharacter player : players) {
@@ -71,7 +80,7 @@ public class QLearning {
 					}
 				}
 			}
-
+			
 			player.m_state_dash[0] = vertical_distance;
 			player.m_state_dash[1] = horizontal_distance;
 
@@ -80,32 +89,32 @@ public class QLearning {
 					.floor((player.vertical_dist_range[1]
 							- player.vertical_dist_range[0] - 1)
 							/ player.resolution), Math
-					.floor((player.m_state[0] - player.vertical_dist_range[0])
-							/ player.resolution)), 0);
+							.floor((player.m_state[0] - player.vertical_dist_range[0])
+									/ player.resolution)), 0);
 
 			int state_bin_h = (int) Math
 					.max(Math.min(
 							Math.floor((player.horizontal_dist_range[1]
 									- player.horizontal_dist_range[0] - 1)
 									/ player.resolution),
-							Math.floor((player.m_state[1] - player.horizontal_dist_range[0])
-									/ player.resolution)), 0);
+									Math.floor((player.m_state[1] - player.horizontal_dist_range[0])
+											/ player.resolution)), 0);
 
 			int state_dash_bin_v = (int) Math
 					.max(Math.min(
 							Math.floor((player.vertical_dist_range[1]
 									- player.vertical_dist_range[0] - 1)
 									/ player.resolution),
-							Math.floor((player.m_state_dash[0] - player.vertical_dist_range[0])
-									/ player.resolution)), 0);
+									Math.floor((player.m_state_dash[0] - player.vertical_dist_range[0])
+											/ player.resolution)), 0);
 
 			int state_dash_bin_h = (int) Math
 					.max(Math.min(
 							Math.floor((player.horizontal_dist_range[1]
 									- player.horizontal_dist_range[0] - 1)
 									/ player.resolution),
-							Math.floor((player.m_state_dash[1] - player.horizontal_dist_range[0])
-									/ player.resolution)), 0);
+									Math.floor((player.m_state_dash[1] - player.horizontal_dist_range[0])
+											/ player.resolution)), 0);
 
 			double click_v = QLearning.Q[state_dash_bin_v][state_dash_bin_h][0];
 			double do_nothing_v = QLearning.Q[state_dash_bin_v][state_dash_bin_h][1];
@@ -119,6 +128,7 @@ public class QLearning {
 			// Step 4: S <- S'
 			player.m_state = new double[2];
 			player.m_state[0] = player.m_state_dash[0];
+			player.m_state[1] = player.m_state_dash[1];
 
 			// Step 1: Select and perform Action A
 			if (Math.random() < player.explore) {
@@ -130,28 +140,116 @@ public class QLearning {
 								Math.floor((player.vertical_dist_range[1]
 										- player.vertical_dist_range[0] - 1)
 										/ player.resolution),
-								Math.floor((player.m_state[0] - player.vertical_dist_range[0])
-										/ player.resolution)), 0);
+										Math.floor((player.m_state[0] - player.vertical_dist_range[0])
+												/ player.resolution)), 0);
 
 				state_bin_h = (int) Math
 						.max(Math.min(
 								Math.floor((player.horizontal_dist_range[1]
 										- player.horizontal_dist_range[0] - 1)
 										/ player.resolution),
-								Math.floor((player.m_state[1] - player.horizontal_dist_range[0])
-										/ player.resolution)), 0);
+										Math.floor((player.m_state[1] - player.horizontal_dist_range[0])
+												/ player.resolution)), 0);
 
 				// [0]: click; [1]: do_nothing
 				click_v = QLearning.Q[state_bin_v][state_bin_h][0];
 				do_nothing_v = QLearning.Q[state_bin_v][state_bin_h][1];
 				player.action_to_perform = click_v > do_nothing_v ? 0 : 1;
 			}
- 
+
 			if (player.action_to_perform == 0 && !player.isPlayer) {
 				player.onTap();
 			}
 		}
 
 		// System.out.println(QLearning.Q[100][50][0]);
+	}
+	
+	public static double[][][] Q2; 
+	
+	public static void learnAndPerform2(List<PlayableCharacter> players,
+			List<Obstacle> obstacles) { 
+		for (PlayableCharacter player : players) {
+			int reward = -10;
+			if (player.isDead) 
+				reward = 10;
+
+			// Step 2: Observe State S'  
+			PipeUp pipe = null;
+			for (Obstacle obs : obstacles) 
+				pipe = obs.pipe_up; 
+
+			if (pipe == null)
+				return;
+
+			pipe.m_state_dash[0] = pipe.getY();
+			pipe.m_state_dash[1] = player.getY();
+
+			// Step 3: Update Q(S, A)
+			int state_bin_v = (int) Math.max(Math.min(Math
+					.floor((pipe.vertical_dist_range[1])
+							/ pipe.resolution), Math
+							.floor((pipe.m_state[0])
+									/ pipe.resolution)), 0);
+
+			int state_bin_h = (int) Math
+					.max(Math.min(
+							Math.floor((pipe.horizontal_dist_range[1])
+									/ pipe.resolution),
+									Math.floor((pipe.m_state[1])
+											/ pipe.resolution)), 0);
+
+			int state_dash_bin_v = (int) Math
+					.max(Math.min(
+							Math.floor((pipe.vertical_dist_range[1])
+									/ pipe.resolution),
+									Math.floor((pipe.m_state_dash[0])
+											/ pipe.resolution)), 0);
+
+			int state_dash_bin_h = (int) Math
+					.max(Math.min(
+							Math.floor((pipe.horizontal_dist_range[1])
+									/ pipe.resolution),
+									Math.floor((pipe.m_state_dash[1])
+											/ pipe.resolution)), 0);
+
+			double max = -99999;
+			for (int i=0; i<10; i++) {
+				double temp = QLearning.Q2[state_dash_bin_v][state_dash_bin_h][i];
+				if (temp > max)
+					max = temp; 
+			}
+			double Q_s_a = QLearning.Q2[state_bin_v][state_bin_h][pipe.action_to_perform];
+			QLearning.Q2[state_bin_v][state_bin_h][pipe.action_to_perform] = Q_s_a
+					+ pipe.alpha_QL
+					* (reward + max - Q_s_a);
+
+			// Step 4: S <- S'
+			pipe.m_state = new double[2];
+			pipe.m_state[0] = pipe.m_state_dash[0];
+			pipe.m_state[1] = pipe.m_state_dash[1];
+
+			// Step 1: Select and perform Action A 
+			state_bin_v = (int) Math
+					.max(Math.min(
+							Math.floor((pipe.vertical_dist_range[1]
+									- pipe.vertical_dist_range[0] - 1)
+									/ pipe.resolution),
+									Math.floor((pipe.m_state[0] - pipe.vertical_dist_range[0])
+											/ pipe.resolution)), 0);
+
+			state_bin_h = (int) Math
+					.max(Math.min(
+							Math.floor((pipe.horizontal_dist_range[1]
+									- pipe.horizontal_dist_range[0] - 1)
+									/ pipe.resolution),
+									Math.floor((pipe.m_state[1] - pipe.horizontal_dist_range[0])
+											/ pipe.resolution)), 0); // [0]: click; [1]: do_nothing
+			//click_v = QLearning.Q[state_bin_v][state_bin_h][0];
+			//do_nothing_v = QLearning.Q[state_bin_v][state_bin_h][1];
+			//player.action_to_perform = click_v > do_nothing_v ? 0 : 1; 
+ 
+			//obstacle.onTap(); 
+		} 
 	}
 }

@@ -5,6 +5,15 @@ import com.zlei.flappypipe.R;
 import android.graphics.Bitmap;
 
 public class PipeUp extends Sprite {
+	public double [] m_state = {0, 0}; // [0]:vertical_distance [1]:horizontal_distance
+	public double [] m_state_dash = {0, 0};
+	public double [] vertical_dist_range = {0, 2000};
+	public double [] horizontal_dist_range = {0, 900};  
+	public double explore = 0;
+	public int action_to_perform = 1;
+	public double resolution = 4;
+	public double alpha_QL = 0.7;  
+	public int reward = 1; 
 
 	/**
 	 * Static bitmap to reduce memory usage.

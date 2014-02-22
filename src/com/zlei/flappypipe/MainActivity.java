@@ -10,8 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
+import android.widget.ImageButton; 
 
 public class MainActivity extends Activity {
 	public static final float DEFAULT_VOLUME = 0.3f;
@@ -25,8 +24,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		PATH = Environment.getExternalStorageDirectory().getPath() + "/flappy";
 		this.loadLearnFile();
-
-		ImageView image_logo = (ImageView) findViewById(R.id.image_logo);
 
 		((ImageButton) findViewById(R.id.play_button)).setImageBitmap(Sprite
 				.createBitmap(getResources().getDrawable(R.drawable.play_pipe),
