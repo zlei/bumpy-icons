@@ -12,10 +12,10 @@ public class GameOverDialog extends Dialog {
 	private Game game;
 
 	/** Name of the SharedPreference that saves the score */
-	public static final String score_save_name = "score_save";
+	public static String score_save_name = "score_save";
 
 	/** Key that saves the score */
-	public static final String best_score_key = "score";
+	public static String best_score_key = "score";
 
 	private TextView tvCurrentScoreVal;
 	private TextView tvBestScoreVal;
@@ -33,11 +33,12 @@ public class GameOverDialog extends Dialog {
 	public void init() {
 		Button b_continue = (Button) findViewById(R.id.b_continue);
 		Button b_finish = (Button) findViewById(R.id.b_finish);
-		// manageScore();
+		manageScore(GameView.getPoints());
 		b_continue.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				dismiss();
+				GameView.resetPoints();
 				game.onRestart();
 			}
 		});
@@ -46,8 +47,8 @@ public class GameOverDialog extends Dialog {
 			@Override
 			public void onClick(View v) {
 				dismiss();
-				//Intent i = new Intent(game, MainActivity.class);
-				//game.startActivity(i);
+				// Intent i = new Intent(game, MainActivity.class);
+				// game.startActivity(i);
 				game.view.gameOver = true;
 				game.finish();
 			}
@@ -55,14 +56,32 @@ public class GameOverDialog extends Dialog {
 	}
 
 	private void manageScore(int points) {
+		String real_best_score_key = best_score_key
+				+ Integer.toString(Game.mode);
 		SharedPreferences saves = game.getSharedPreferences(score_save_name, 0);
-		int oldPoints = saves.getInt(best_score_key, 0);
-		if (points > oldPoints) {
-			// Save new highscore
-			SharedPreferences.Editor editor = saves.edit();
-			editor.putInt(best_score_key, points);
-			tvBestScoreVal.setTextColor(Color.RED);
-			editor.commit();
+		int oldPoints = saves.getInt(real_best_score_key, 0);
+		// pipe mode: need to find lowest score
+		if (Game.mode == 1) {
+			if (oldPoints == 0)
+				oldPoints = Integer.MAX_VALUE;
+			if (points < oldPoints) {
+				SharedPreferences.Editor editor = saves.edit();
+				oldPoints = points;
+				editor.putInt(real_best_score_key, points);
+				tvBestScoreVal.setTextColor(Color.RED);
+				editor.commit();
+			}
+		}
+		// all the other modes, normal score system
+		else {
+			if (points > oldPoints) {
+				// Save new highscore
+				SharedPreferences.Editor editor = saves.edit();
+				oldPoints = points;
+				editor.putInt(real_best_score_key, points);
+				tvBestScoreVal.setTextColor(Color.RED);
+				editor.commit();
+			}
 		}
 		tvCurrentScoreVal.setText("" + points);
 		tvBestScoreVal.setText("" + oldPoints);

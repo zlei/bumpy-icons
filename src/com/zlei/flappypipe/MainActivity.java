@@ -28,7 +28,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		PATH = Environment.getExternalStorageDirectory().getPath() + "/flappy";
 		this.loadLearnFile();
-		 
+
 		((ImageButton) findViewById(R.id.play_button)).setImageBitmap(Sprite
 				.createBitmap(getResources().getDrawable(R.drawable.play_pipe),
 						this));
@@ -82,10 +82,9 @@ public class MainActivity extends Activity {
 						startActivity(i);
 					}
 				});
-		
+
 		((ImageButton) findViewById(R.id.voice_button)).setImageBitmap(Sprite
-				.createBitmap(
-						getResources().getDrawable(R.drawable.voice),
+				.createBitmap(getResources().getDrawable(R.drawable.voice),
 						this));
 		((ImageButton) findViewById(R.id.voice_button))
 				.setOnClickListener(new View.OnClickListener() {
@@ -100,20 +99,19 @@ public class MainActivity extends Activity {
 
 	}
 
-
-
 	public void initMusicPlayer() {
 		if (musicPlayer == null) {
 			musicPlayer = MediaPlayer.create(this, R.raw.iml);
 			musicPlayer.setLooping(true);
-			//musicPlayer.setVolume(MainActivity.volume, MainActivity.volume);
+			// musicPlayer.setVolume(MainActivity.volume, MainActivity.volume);
 		}
-		
+
 		musicPlayer.seekTo(0); // Reset song to position 0
-		if (musicShouldPlay){
+		if (musicShouldPlay) {
 			musicPlayer.start();
 		}
 	}
+
 	@Override
 	protected void onResume() {
 		super.onResume();

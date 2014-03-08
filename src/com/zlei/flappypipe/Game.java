@@ -17,7 +17,7 @@ public class Game extends Activity {
 	public static SoundPool soundPool = new SoundPool(5,
 			AudioManager.STREAM_MUSIC, 0);
 	private MyHandler handler;
-	public int mode; 
+	public static int mode;
 	GameView view;
 	GameOverDialog gameOverDialog;
 
@@ -36,16 +36,17 @@ public class Game extends Activity {
 		else if (bundle.getString("mode").equals("compete"))
 			mode = 3;
 		else if (bundle.getString("mode").equals("sound")) {
-			mode = 0; 
+			mode = 0;
 		}
 		view = new GameView(this, true);
-		if (bundle.getString("mode").equals("sound")) 
+		if (bundle.getString("mode").equals("sound"))
 			view.allowSound = true;
-		
+
 		gameOverDialog = new GameOverDialog(this);
 		handler = new MyHandler(this);
-		setLayouts(); 
+		setLayouts();
 	}
+
 	/**
 	 * Creates the layout containing a layout for ads and the GameView
 	 */
@@ -58,7 +59,7 @@ public class Game extends Activity {
 
 	@Override
 	protected void onPause() {
-		view.pause();  
+		view.pause();
 		super.onPause();
 	}
 

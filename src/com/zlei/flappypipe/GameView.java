@@ -28,7 +28,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private boolean deleteAll = false;
 	volatile private boolean shouldRun = false;
 	public boolean allowLearning = false;
-	private int points = 0;
+	private static int points = 0;
 	boolean gameOver = false;
 	private int bestScore = 0;
 
@@ -36,7 +36,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private Background bg;
 	private Frontground fg;
 	private List<PlayableCharacter> players = new ArrayList<PlayableCharacter>();
-	private List<Obstacle> obstacles = new ArrayList<Obstacle>(); 
+	private List<Obstacle> obstacles = new ArrayList<Obstacle>();
 	private SoundMeter sound = new SoundMeter();
 	boolean allowSound = false;
 
@@ -100,10 +100,11 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 			if (shouldRun == false) {
 				shouldRun = true;
 				deleteAll = true;
-			} 
-			
+			}
+
 			if (allowLearning) {
 				gameOver = true;
+				resetPoints();
 				game.finish();
 			}
 
@@ -120,25 +121,25 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	 * The thread runs this method
 	 */
 	int looptime = 0;
+
 	public void run() {
 		draw();
 
-		while (!gameOver) { 
+		while (!gameOver) {
 			if (allowSound && sound.getAmplitude() > 1000 && looptime++ < 1000) {
 				looptime = 0;
-				
+
 				if (shouldRun == false) {
 					shouldRun = true;
-				} 
-				
+				}
+
 				if (game.mode == 1 || game.mode == 2)
 					;
-				else
-					if (players.size() > 0)
-						this.players.get(0).onTap();
+				else if (players.size() > 0)
+					this.players.get(0).onTap();
 			}
 
-			if (deleteAll) { 
+			if (deleteAll) {
 				if (game.mode == 0)
 					players.get(0).isPlayer = true;
 
@@ -177,7 +178,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 							e.printStackTrace();
 						}
 					}
-				} 
+				}
 			}
 		}
 	}
@@ -257,7 +258,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		paint.setTextSize(getScoreTextMetrics());
 		canvas.drawText(
 				game.getResources().getString(R.string.onscreen_score_text)
-				+ points, getScoreTextMetrics(), getScoreTextMetrics(),
+						+ points, getScoreTextMetrics(), getScoreTextMetrics(),
 				paint);
 	}
 
@@ -295,7 +296,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				this.obstacles.remove(i);
 				i--;
 			}
-		} 
+		}
 	}
 
 	/**
@@ -332,17 +333,16 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		}
 
 		if (allDead) {
-			points = 0; 
 			obstacles.removeAll(obstacles);
 			players.removeAll(players);
-			
+
 			if (!allowLearning)
 				setOnTouchListener(null);
 
 			if (allowLearning) {
 				for (int i = 0; i < numOfLearners; i++) {
 					players.add(createIcon(-1));
-				} 
+				}
 
 				shouldRun = false;
 				draw();
@@ -353,11 +353,11 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 					e.printStackTrace();
 				}
 			} else
-				gameOver(); 
+				gameOver();
 		}
 	}
 
-	public void restart() {  
+	public void restart() {
 		if (game.mode == 3) {
 			players.add(createIcon(4));
 			players.add(createIcon(1));
@@ -367,10 +367,10 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		} else
 			for (int i = 0; i < numOfPigs; i++) {
 				players.add(createIcon(-1));
-			} 
+			}
 
 		shouldRun = false;
-		draw(); 
+		draw();
 		setOnTouchListener(this);
 
 		try {
@@ -378,7 +378,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-	} 
+	}
 
 	/**
 	 * if no obstacle is present a new one is created
@@ -465,7 +465,11 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		return this.game;
 	}
 
-	public int getPoints() {
-		return this.points;
+	public static int getPoints() {
+		return points;
+	}
+
+	public static void resetPoints() {
+		points = 0;
 	}
 }
