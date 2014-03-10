@@ -53,7 +53,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private final int ICON_RANDOM = 4; 
 
 	public PlayableCharacter createIcon(int icon) {
-		int r = icon == ICON_RANDOM? (int) Math.ceil(Math.random() * 4) : icon; 
+		int r = icon == ICON_RANDOM ? (int) Math.floor(Math.random() * 4) : icon; 
 
 		switch (r) {
 		case ICON_FIREFOX:
@@ -81,7 +81,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		case GAME_MODE_PIPE:
 			UPDATE_INTERVAL = 10;
 			numOfPigs = 1;
-			players.add(createIcon(-1));
+			players.add(createIcon(ICON_RANDOM));
 			break;
 
 		case GAME_MODE_LEARN: {
@@ -89,16 +89,16 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 			numOfPigs = 50;
 			allowLearning = true;
 			for (int i = 0; i < numOfPigs; i++)
-				players.add(createIcon(-1));
+				players.add(createIcon(ICON_RANDOM));
 		} break;
 
 		case GAME_MODE_COMPETE: {
 			UPDATE_INTERVAL = 10;
 			numOfPigs = 4;
-			players.add(createIcon(4));
-			players.add(createIcon(1));
-			players.add(createIcon(2));
-			players.add(createIcon(3));
+			players.add(createIcon(ICON_SAFARI));
+			players.add(createIcon(ICON_IE));
+			players.add(createIcon(ICON_CHROME));
+			players.add(createIcon(ICON_FIREFOX));
 			players.get(0).isPlayer = true;
 		} break; 
 		}
@@ -329,7 +329,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 
 			if (allowLearning) {
 				for (int i = 0; i < numOfLearners; i++) {
-					players.add(createIcon(-1));
+					players.add(createIcon(ICON_RANDOM));
 				}
 
 				shouldRun = false;
@@ -347,14 +347,14 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 
 	public void restart() {
 		if (Game.mode == GAME_MODE_COMPETE) {
-			players.add(createIcon(4));
-			players.add(createIcon(1));
-			players.add(createIcon(2));
-			players.add(createIcon(3));
+			players.add(createIcon(ICON_SAFARI));
+			players.add(createIcon(ICON_CHROME));
+			players.add(createIcon(ICON_IE));
+			players.add(createIcon(ICON_FIREFOX));
 			players.get(0).isPlayer = true;
 		} else
 			for (int i = 0; i < numOfPigs; i++) {
-				players.add(createIcon(-1));
+				players.add(createIcon(ICON_RANDOM));
 			}
 
 		shouldRun = false;
