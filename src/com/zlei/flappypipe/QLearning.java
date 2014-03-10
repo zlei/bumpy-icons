@@ -4,37 +4,11 @@ import java.util.List;
 
 public class QLearning {
 	private static QLearning singleton = new QLearning();
-	public static double[][][] Q;
 
 	/*
 	 * A private Constructor prevents any other class from instantiating.
 	 */
 	private QLearning() {
-		int width = 500;// Math.max(getWidth(), getHeight());
-		Q = new double[width][width][2];
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < width; j++) {
-				for (int k = 0; k < 2; k++) {
-					Q[i][j][k] = 0.0;
-				}
-			}
-		}
-	}
-
-	public static void setQ(String[] s) {
-		int width = 500;// Math.max(getWidth(), getHeight());
-		Q = new double[width][width][2];
-		int n = 0;
-
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < width; j++) {
-				for (int k = 0; k < 2; k++) {
-					System.out.println(s[n]);
-					Q[i][j][k] = Double.parseDouble(s[n]);
-					n++;
-				}
-			}
-		}
 	}
 
 	/* Static 'instance' method */
@@ -60,6 +34,7 @@ public class QLearning {
 			// Step 2: Observe State S'
 			double horizontal_distance = 9999;
 			double vertical_distance = 9999;
+			double [][][] Q = player.getQ();
 
 			for (Obstacle obs : obstacles) {
 				PipeUp pipe = obs.pipe_up;
@@ -107,12 +82,12 @@ public class QLearning {
 							Math.floor((player.m_state_dash[1] - player.horizontal_dist_range[0])
 									/ player.resolution)), 0);
 
-			double click_v = QLearning.Q[state_dash_bin_v][state_dash_bin_h][0];
-			double do_nothing_v = QLearning.Q[state_dash_bin_v][state_dash_bin_h][1];
+			double click_v = Q[state_dash_bin_v][state_dash_bin_h][0];
+			double do_nothing_v = Q[state_dash_bin_v][state_dash_bin_h][1];
 			double V_s_dash_a_dash = Math.max(click_v, do_nothing_v);
 
-			double Q_s_a = QLearning.Q[state_bin_v][state_bin_h][player.action_to_perform];
-			QLearning.Q[state_bin_v][state_bin_h][player.action_to_perform] = Q_s_a
+			double Q_s_a = Q[state_bin_v][state_bin_h][player.action_to_perform];
+			Q[state_bin_v][state_bin_h][player.action_to_perform] = Q_s_a
 					+ player.alpha_QL
 					* (player.reward + V_s_dash_a_dash - Q_s_a);
 
@@ -142,8 +117,8 @@ public class QLearning {
 										/ player.resolution)), 0);
 
 				// [0]: click; [1]: do_nothing
-				click_v = QLearning.Q[state_bin_v][state_bin_h][0];
-				do_nothing_v = QLearning.Q[state_bin_v][state_bin_h][1];
+				click_v = Q[state_bin_v][state_bin_h][0];
+				do_nothing_v = Q[state_bin_v][state_bin_h][1];
 				player.action_to_perform = click_v > do_nothing_v ? 0 : 1;
 			}
  

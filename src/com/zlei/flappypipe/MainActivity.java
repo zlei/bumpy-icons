@@ -11,7 +11,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 
 public class MainActivity extends Activity {
@@ -142,7 +141,24 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	private boolean updateLearnFile() {
+	public static void setQ(String[] s, double[][][] Q) {
+		int width = 500;// Math.max(getWidth(), getHeight());
+		Q = new double[width][width][2];
+		int n = 0;
+
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < width; j++) {
+				for (int k = 0; k < 2; k++) {
+					System.out.println(s[n]);
+					Q[i][j][k] = Double.parseDouble(s[n]);
+					n++;
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings("unused")
+	private boolean updateLearnFile(double[][][] Q) {
 		File logFile = new File(PATH);
 		logFile.mkdirs();
 
@@ -159,8 +175,7 @@ public class MainActivity extends Activity {
 			for (int i = 0; i < 100; i++) {
 				for (int j = 0; j < 100; j++) {
 					for (int k = 0; k < 2; k++) {
-						// System.out.println(QLearning.Q[i][j][k]);
-						file.write(String.valueOf(QLearning.Q[i][j][k]) + "\n");
+						file.write(String.valueOf(Q[i][j][k]) + "\n");
 					}
 				}
 

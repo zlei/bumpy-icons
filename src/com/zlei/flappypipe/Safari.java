@@ -4,17 +4,20 @@ import android.graphics.Bitmap;
 
 public class Safari extends PlayableCharacter {
 	public static Bitmap globalBitmap;
+	public static double[][][] Q;
 
 	public Safari(GameView view, Game game) {
 		super(view, game);  
 	
 		bumprate = 0.77;
 
-		if (globalBitmap == null) {
+		if (globalBitmap == null) 
 			globalBitmap = createBitmap(game.getResources().getDrawable(
 					R.drawable.safari)); 
-		} 
-
+	
+		if (Q == null) 
+			initQ();
+		
 		this.bitmap = globalBitmap; 
 		this.width = this.bitmap.getWidth();
 		this.height = this.bitmap.getHeight();
@@ -24,6 +27,23 @@ public class Safari extends PlayableCharacter {
 		this.y = game.getResources().getDisplayMetrics().heightPixels / 2 + rand;
 	}
 
+	public double[][][] getQ() {
+		return Q;
+	}
+	
+	public static void initQ() { 
+		int width = 500; 
+		Q = new double[width][width][2];
+		
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < width; j++) {
+				for (int k = 0; k < 2; k++) {
+					Q[i][j][k] = 0.0;
+				}
+			}
+		}
+	}
+	
 	@Override
 	public void onTap() {
 		super.onTap();

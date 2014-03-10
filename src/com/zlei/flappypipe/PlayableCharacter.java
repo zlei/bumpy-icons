@@ -1,8 +1,12 @@
 package com.zlei.flappypipe;
 
 public abstract class PlayableCharacter extends Sprite {
-	public double[] m_state = { 0, 0 }; // [0]:vertical_distance
-										// [1]:horizontal_distance
+	public boolean isDead = false;
+	public boolean isPlayer = false;
+	 
+	public double[] m_state = { 0, 0 }; 
+	// [0]:vertical_distance
+	// [1]:horizontal_distance
 	public double[] m_state_dash = { 0, 0 };
 	public double explore = 0;
 	public int action_to_perform = 1;
@@ -10,14 +14,16 @@ public abstract class PlayableCharacter extends Sprite {
 	public double alpha_QL = 0.7;
 	public double[] vertical_dist_range = { -350, 190 };
 	public double[] horizontal_dist_range = { 0, 180 };
-	public int reward = 1;
-	public boolean isDead = false;
-	public boolean isPlayer = false;
-
+	public int reward = 1; 
+	
 	public PlayableCharacter(GameView view, Game game) {
 		super(view, game);
 	}
 
+	public double[][][] getQ() {
+		return null;
+	}
+	
 	/**
 	 * Calls super.move Moves the character to 1/6 of the horizontal screen
 	 * Manages the speed changes -> Falling

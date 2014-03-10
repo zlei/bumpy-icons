@@ -7,6 +7,7 @@ package com.zlei.flappypipe;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -19,13 +20,13 @@ import android.view.View.OnTouchListener;
 
 import com.zlei.flappypipe.R;
 
+@SuppressLint("ViewConstructor")
 public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	public static long UPDATE_INTERVAL = 10;
 	public int numOfPigs = 1, numOfLearners = 100;
 	private Thread thread;
 	private SurfaceHolder holder;
-	private int obstacleY = -1;
-	private boolean deleteAll = false;
+	private int obstacleY = -1; 
 	volatile private boolean shouldRun = false;
 	public boolean allowLearning = false;
 	private static int points = 0;
@@ -38,58 +39,77 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	private List<PlayableCharacter> players = new ArrayList<PlayableCharacter>();
 	private List<Obstacle> obstacles = new ArrayList<Obstacle>();
 	private SoundMeter sound = new SoundMeter();
-	boolean allowSound = false;
+	boolean allowSound = false; 
+	
+	private final int GAME_MODE_FLYER = 0; 
+	private final int GAME_MODE_PIPE = 1;
+	private final int GAME_MODE_LEARN = 2;
+	private final int GAME_MODE_COMPETE = 3; 
+	
+	private final int ICON_FIREFOX = 0; 
+	private final int ICON_SAFARI = 1;
+	private final int ICON_CHROME = 2;
+	private final int ICON_IE = 3; 
+	private final int ICON_RANDOM = 4; 
 
-	public PlayableCharacter createIcon(int r2) {
-		int r = 0;
-		if (r2 == -1)
-			r = (int) Math.ceil(Math.random() * 4);
-		else
-			r = r2;
+	public PlayableCharacter createIcon(int icon) {
+		int r = icon == ICON_RANDOM? (int) Math.ceil(Math.random() * 4) : icon; 
 
-		if (r == 1) {
+		switch (r) {
+		case ICON_FIREFOX:
 			return new FireFox(this, game);
-		} else if (r == 2) {
+
+		case ICON_IE:
 			return new Exlpore(this, game);
-		} else if (r == 3) {
+
+		case ICON_SAFARI:
 			return new Safari(this, game);
-		} else if (r == 4 || r == 0) {
+
+		case ICON_CHROME:	
 			return new Chrome(this, game);
 		}
 
 		return null;
 	}
 
-	public GameView(Context context, boolean playable) {
+	public GameView(Context context) {
 		super(context);
 		this.game = (Game) context;
 
-		if (game.mode == 0)
+		switch (Game.mode) {
+		case GAME_MODE_FLYER: 
+		case GAME_MODE_PIPE:
+			UPDATE_INTERVAL = 10;
 			numOfPigs = 1;
-		else if (game.mode == 1)
-			numOfPigs = 1;
-		else if (game.mode == 2) {
-			allowLearning = true;
+			players.add(createIcon(-1));
+			break;
+
+		case GAME_MODE_LEARN: {
+			UPDATE_INTERVAL = 1;
 			numOfPigs = 50;
-		} else if (game.mode == 3)
+			allowLearning = true;
+			for (int i = 0; i < numOfPigs; i++)
+				players.add(createIcon(-1));
+		} break;
+
+		case GAME_MODE_COMPETE: {
+			UPDATE_INTERVAL = 10;
 			numOfPigs = 4;
-
-		holder = getHolder();
-
-		if (game.mode == 3) {
 			players.add(createIcon(4));
 			players.add(createIcon(1));
 			players.add(createIcon(2));
 			players.add(createIcon(3));
 			players.get(0).isPlayer = true;
-		} else
-			for (int i = 0; i < numOfPigs; i++)
-				players.add(createIcon(-1));
+		} break; 
+		}
+		
+		holder = getHolder(); 
 
 		bg = new Background(this, game);
 		fg = new Frontground(this, game);
 
 		setOnTouchListener(this);
+		
 		if (allowSound)
 			sound.start();
 	}
@@ -97,10 +117,8 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN) {
-			if (shouldRun == false) {
-				shouldRun = true;
-				deleteAll = true;
-			}
+			if (shouldRun == false)  
+				shouldRun = true;  
 
 			if (allowLearning) {
 				gameOver = true;
@@ -108,7 +126,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				game.finish();
 			}
 
-			if (game.mode == 1 || game.mode == 2)
+			if (Game.mode == GAME_MODE_PIPE)
 				obstacleY = (int) event.getY();
 			else
 				this.players.get(0).onTap();
@@ -129,24 +147,13 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 			if (allowSound && sound.getAmplitude() > 1000 && looptime++ < 1000) {
 				looptime = 0;
 
-				if (shouldRun == false) {
+				if (shouldRun == false) 
 					shouldRun = true;
-				}
 
-				if (game.mode == 1 || game.mode == 2)
-					;
-				else if (players.size() > 0)
-					this.players.get(0).onTap();
-			}
-
-			if (deleteAll) {
-				if (game.mode == 0)
-					players.get(0).isPlayer = true;
-
-				deleteAll = false;
-			}
-
-			if (shouldRun) {
+				this.players.get(0).onTap();
+			} 
+			
+			if (shouldRun || allowLearning) {
 				checkPasses();
 				checkOutOfRange();
 				checkCollision();
@@ -160,26 +167,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-			} else {
-				if (allowLearning) {
-					checkPasses();
-					checkOutOfRange();
-					checkCollision();
-					createObstacle();
-					QLearning.learnAndPerform(players, obstacles);
-					move();
-
-					if (points > 20) {
-						draw();
-
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
+			}  
 		}
 	}
 
@@ -358,7 +346,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 	}
 
 	public void restart() {
-		if (game.mode == 3) {
+		if (Game.mode == GAME_MODE_COMPETE) {
 			players.add(createIcon(4));
 			players.add(createIcon(1));
 			players.add(createIcon(2));
