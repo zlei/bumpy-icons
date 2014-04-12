@@ -5,7 +5,8 @@
 package com.zlei.flappypipe;
 
 import android.app.Activity;
-import android.media.AudioManager; 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,8 +38,7 @@ public class Game extends Activity {
 		else if (bundle.getString("mode").equals("sound")) {
 			mode = 0;
 		}
-		
-		view = new GameView(this);
+		view = new GameView(this, true);
 		if (bundle.getString("mode").equals("sound"))
 			view.allowSound = true;
 

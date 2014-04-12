@@ -1,6 +1,7 @@
 package com.zlei.flappypipe;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.View;

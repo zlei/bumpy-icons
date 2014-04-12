@@ -5,7 +5,6 @@
 
 package com.zlei.flappypipe;
 
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
