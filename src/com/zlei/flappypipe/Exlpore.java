@@ -13,18 +13,10 @@ public class Exlpore extends PlayableCharacter {
 
 		if (globalBitmap == null) {
 			globalBitmap = createBitmap(game.getResources().getDrawable(
-<<<<<<< HEAD
 					R.drawable.ieie));
 		}
 
 		this.bitmap = globalBitmap;
-=======
-					R.drawable.ieie));  
-
-		if (null == Q)
-			Q = new double[Q_witdh][Q_height][2];
-		this.bitmap = globalBitmap; 
->>>>>>> FETCH_HEAD
 		this.width = this.bitmap.getWidth();
 		this.height = this.bitmap.getHeight();
 		int rand = (int) (Math.random() * height * 2);
@@ -34,13 +26,6 @@ public class Exlpore extends PlayableCharacter {
 				+ rand;
 	}
 
-<<<<<<< HEAD
-=======
-	public double[][][] getQ() {
-		return Q;
-	} 
-	
->>>>>>> FETCH_HEAD
 	@Override
 	public void onTap() {
 		super.onTap();

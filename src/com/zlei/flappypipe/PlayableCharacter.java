@@ -3,31 +3,21 @@ package com.zlei.flappypipe;
 public abstract class PlayableCharacter extends Sprite {
 	public boolean isDead = false;
 	public boolean isPlayer = false;
-
+	 
+	public double[] m_state = { 0, 0 }; 
 	// [0]:vertical_distance
 	// [1]:horizontal_distance
-	public double[] m_state = { 0, 0 }; 
 	public double[] m_state_dash = { 0, 0 };
-	public static final double explore = 0;
+	public double explore = 0;
 	public int action_to_perform = 1;
-	public static final int resolution = 8; 
-	public static int Q_witdh;
-	public static int Q_height; 
-	public static final double alpha_QL = 0.7;
-	public static double [] vertical_dist_range = { -800, 640 };
-	public static double [] horizontal_dist_range = { -30, 910 };
+	public double resolution = 4;
+	public double alpha_QL = 0.7;
+	public double[] vertical_dist_range = { -350, 190 };
+	public double[] horizontal_dist_range = { 0, 180 };
 	public int reward = 1; 
 	
 	public PlayableCharacter(GameView view, Game game) {
 		super(view, game);
-		
-		int height = game.getResources().getDisplayMetrics().heightPixels; 
-		int width = game.getResources().getDisplayMetrics().widthPixels; 
-		vertical_dist_range[0] = -height * 5 / 6;
-		vertical_dist_range[1] = height * 5 / 6;
-		Q_witdh = (int) Math.floor((vertical_dist_range[1] - vertical_dist_range[0]) / resolution) + 10;
-		horizontal_dist_range[1] = width - this.view.getWidth() / 6; 
-		Q_height = (int) Math.floor((horizontal_dist_range[1] - horizontal_dist_range[0]) / resolution) + 10;
 	}
 
 	public double[][][] getQ() {

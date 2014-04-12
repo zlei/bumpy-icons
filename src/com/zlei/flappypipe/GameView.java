@@ -64,20 +64,7 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 		super(context);
 		this.game = (Game) context;
 
-<<<<<<< HEAD
 		if (game.mode == 0)
-=======
-		switch (Game.mode) {
-		case GAME_MODE_FLYER: 
-			UPDATE_INTERVAL = 10;
-			numOfPigs = 1;
-			players.add(createIcon(ICON_RANDOM));
-			players.get(0).isPlayer = true;
-			break;
-			
-		case GAME_MODE_PIPE:
-			UPDATE_INTERVAL = 10;
->>>>>>> FETCH_HEAD
 			numOfPigs = 1;
 		else if (game.mode == 1)
 			numOfPigs = 1;
@@ -166,15 +153,12 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				createObstacle();
 				QLearning.learnAndPerform(players, obstacles);
 				move();
- 
-				if (!allowLearning) {
 				draw();
 
 				try {
 					Thread.sleep(UPDATE_INTERVAL);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
-				} 
 				}
 			} else {
 				if (allowLearning) {
@@ -361,10 +345,10 @@ public class GameView extends SurfaceView implements Runnable, OnTouchListener {
 				}
 
 				shouldRun = false;
-				//draw();
+				draw();
 
 				try {
-					Thread.sleep(UPDATE_INTERVAL * 10);
+					Thread.sleep(UPDATE_INTERVAL);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
